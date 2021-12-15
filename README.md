@@ -18,6 +18,8 @@ Games based on this engine can have the following files:
 
 Images will be automatically converted to and from PNG.
 
+Audio files are currently not supported (the obfuscated OGGs will be extracted as-is).
+
 ## Command line
 
 ```
