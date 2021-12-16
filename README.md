@@ -1,6 +1,10 @@
 # CSystemTools
 Script and image unpacking and repacking tool for the Cyberworks "C,system" visual novel engine.
 
+Note: the tool has had only limited testing and doesn't work for all games.
+
+## Overview
+
 Games based on this engine can have the following files:
 
 * Arc00.dat: general configuration (e.g. window title, font size and so on)
