@@ -8,11 +8,11 @@ Note: the tool has had only limited testing and doesn't work for all games.
 Games based on this engine can have the following files:
 
 * Arc00.dat: general configuration (e.g. window title, font size and so on)
-* Arc01.dat: scenario file table
+* Arc01.dat: scenario file index
 * Arc04.dat: scenario file content
-* Arc02.dat: image file table
+* Arc02.dat: image file index
 * Arc05.dat, Arc05a.dat, Arc05b.dat: image file content
-* Arc03.dat: audio file table
+* Arc03.dat: audio file index
 * Arc06.dat: audio file content
 * Arc07.dat: unknown table
 * Arc08.dat: unknown content
