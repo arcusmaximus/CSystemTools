@@ -14,9 +14,9 @@ Games based on this engine can have the following files:
 * Arc05.dat, Arc05a.dat, Arc05b.dat: image file content
 * Arc03.dat: audio file index
 * Arc06.dat: audio file content
-* Arc07.dat: unknown table
+* Arc07.dat: unknown index
 * Arc08.dat: unknown content
-* Arc09.dat: unknown table
+* Arc09.dat: unknown index
 
 .csa scenario files extracted from Arc01.dat/Arc04.dat can be translated using [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools).
 
