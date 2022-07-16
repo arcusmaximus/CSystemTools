@@ -4,6 +4,12 @@ namespace CSystemArc
 {
     internal class ArchiveEntry
     {
+        public int Version
+        {
+            get;
+            set;
+        }
+
         public int Index
         {
             get;
@@ -54,7 +60,7 @@ namespace CSystemArc
 
         public void Read(BinaryReader reader)
         {
-            reader.ReadInt32();
+            Version = reader.ReadInt32();
             Id = reader.ReadInt32();
             UncompressedSize = reader.ReadInt32();
             CompressedSize = reader.ReadInt32();
@@ -62,12 +68,13 @@ namespace CSystemArc
             Type = (char)reader.ReadByte();
             SubType = (char)reader.ReadByte();
             reader.ReadInt32();
-            ContentArchiveIndex = reader.ReadByte();
+            if (Version > 0x16)
+                ContentArchiveIndex = reader.ReadByte();
         }
 
         public void Write(BinaryWriter writer)
         {
-            writer.Write(0);
+            writer.Write(Version);
             writer.Write(Id);
             writer.Write(UncompressedSize);
             writer.Write(CompressedSize);
@@ -75,7 +82,8 @@ namespace CSystemArc
             writer.Write((byte)Type);
             writer.Write((byte)SubType);
             writer.Write(-1);
-            writer.Write((byte)ContentArchiveIndex);
+            if (Version > 0x16)
+                writer.Write((byte)ContentArchiveIndex);
         }
 
         public override string ToString()

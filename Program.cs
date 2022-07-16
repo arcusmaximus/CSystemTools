@@ -33,13 +33,19 @@ namespace CSystemArc
                         break;
 
                     case "pack":
-                        if (args.Length < 4)
+                        if (args.Length < 5)
                         {
                             PrintUsage();
                             return;
                         }
 
-                        Pack(args[1], args[2], args.Skip(3).ToList());
+                        if (!int.TryParse(args[1], out int version))
+                        {
+                            Console.WriteLine($"{args[1]} is not a valid version number");
+                            break;
+                        }
+
+                        Pack(version, args[2], args[3], args.Skip(4).ToList());
                         break;
 
                     case "readconfig":
@@ -85,11 +91,18 @@ namespace CSystemArc
             using ArchiveReader reader = new ArchiveReader(indexFilePath, contentFilePaths);
             IEnumerable<ArchiveEntry> entries = reader.Entries;
             List<ArchiveEntry> failedEntries;
+            bool versionPrinted = false;
             do
             {
                 failedEntries = new List<ArchiveEntry>();
                 foreach (ArchiveEntry entry in entries)
                 {
+                    if (!versionPrinted)
+                    {
+                        Console.WriteLine($"Archive version: {entry.Version}");
+                        versionPrinted = true;
+                    }
+
                     if (!TryUnpackEntry(reader, entry, folderPath))
                         failedEntries.Add(entry);
                 }
@@ -99,7 +112,7 @@ namespace CSystemArc
 
         private static bool TryUnpackEntry(ArchiveReader reader, ArchiveEntry entry, string folderPath)
         {
-            Console.WriteLine($"Unpacking {entry.Id:d04} (type {entry.Type})");
+            Console.WriteLine($"Unpacking {entry.Id:d06} (type {entry.Type}{entry.SubType})");
             byte[] content = reader.GetEntryContent(entry);
             switch (entry.Type)
             {
@@ -148,11 +161,11 @@ namespace CSystemArc
             File.WriteAllBytes(filePath, content);
         }
 
-        private static void Pack(string folderPath, string indexFilePath, IList<string> contentFilePaths)
+        private static void Pack(int version, string folderPath, string indexFilePath, IList<string> contentFilePaths)
         {
             VerifyFolderExists(folderPath);
 
-            using ArchiveWriter writer = new ArchiveWriter(indexFilePath, contentFilePaths);
+            using ArchiveWriter writer = new ArchiveWriter(version, indexFilePath, contentFilePaths);
             PackRawFiles(folderPath, writer);
             PackImages(folderPath, writer);
         }
@@ -164,7 +177,7 @@ namespace CSystemArc
                 if (!TryParseRawFileName(Path.GetFileName(filePath), out int id, out char type, out char subType))
                     continue;
 
-                Console.WriteLine($"Packing {id:d04} (type {type})");
+                Console.WriteLine($"Packing {id:d06} (type {type}{subType})");
                 byte[] content = File.ReadAllBytes(filePath);
                 writer.Write(id, type, subType, content);
             }
@@ -315,7 +328,7 @@ namespace CSystemArc
             string assembly = Assembly.GetEntryAssembly().GetName().Name;
             Console.WriteLine("Usage:");
             Console.WriteLine($"  {assembly} unpack index.dat content1.dat content2.dat ... folder");
-            Console.WriteLine($"  {assembly} pack folder index.dat content1.dat content2.dat ...");
+            Console.WriteLine($"  {assembly} pack version folder index.dat content1.dat content2.dat ...");
             Console.WriteLine($"  {assembly} readconfig config.dat config.xml");
             Console.WriteLine($"  {assembly} writeconfig config.xml config.dat");
         }

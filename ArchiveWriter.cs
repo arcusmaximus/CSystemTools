@@ -10,6 +10,7 @@ namespace CSystemArc
     {
         private const int MaxContentArchiveSize = 0x7FFFFFFF;
 
+        private readonly int _version;
         private readonly Stream _indexStream;
         private readonly IList<Stream> _contentStreams;
         private readonly bool _leaveOpen;
@@ -17,20 +18,22 @@ namespace CSystemArc
 
         private readonly List<ArchiveEntry> _entries = new List<ArchiveEntry>();
 
-        public ArchiveWriter(string indexFilePath, IList<string> contentFilePaths)
+        public ArchiveWriter(int version, string indexFilePath, IList<string> contentFilePaths)
         {
+            _version = version;
             _indexStream = File.Open(indexFilePath, FileMode.Create, FileAccess.Write);
             _contentStreams = new List<Stream>();
             foreach (string contentFilePath in contentFilePaths)
             {
                 _contentStreams.Add(File.Open(contentFilePath, FileMode.Create, FileAccess.Write));
             }
-
+            
             _leaveOpen = false;
         }
 
-        public ArchiveWriter(Stream indexStream, IList<Stream> contentStreams, bool leaveOpen = false)
+        public ArchiveWriter(int version, Stream indexStream, IList<Stream> contentStreams, bool leaveOpen = false)
         {
+            _version = version;
             _indexStream = indexStream;
             _contentStreams = contentStreams;
             _leaveOpen = leaveOpen;
@@ -53,6 +56,7 @@ namespace CSystemArc
             ArchiveEntry entry =
                 new ArchiveEntry
                 {
+                    Version = _version,
                     ContentArchiveIndex = contentArchiveIndex,
                     Id = id,
                     Type = type,
