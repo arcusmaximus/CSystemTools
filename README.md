@@ -18,7 +18,7 @@ Games based on this engine can have the following files:
 * Arc08.dat: unknown content
 * Arc09.dat: unknown index
 
-.csa scenario files extracted from Arc01.dat/Arc04.dat can be translated using [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools).
+.a0 scenario files extracted from Arc01.dat/Arc04.dat can be translated using [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools).
 
 Images will be automatically converted to and from PNG.
 
@@ -31,10 +31,12 @@ CSystemArc unpack index.dat content1.dat content2.dat ... folder
 ```
 Extract the specified archives to a folder. Example: `unpack Arc01.dat Arc04.dat scenarios`
 
+This command will also print the version number of the archive format at the very beginning (e.g. "Archive version: 23"). This is needed for the "pack" command later on.
+
 ```
-CSystemArc pack folder index.dat content1.dat content2.dat ...
+CSystemArc pack version folder index.dat content1.dat content2.dat ...
 ```
-Pack a folder into one or more archive files. The archive files will be completely overwritten (files that are in the original archives but not in the folder will be lost). Example: `pack scenarios Arc01.dat Arc04.dat`
+Pack a folder into one or more archive files. The archive files will be completely overwritten (files that are in the original archives but not in the folder will be lost). Example: `pack 23 scenarios Arc01.dat Arc04.dat`
 
 ```
 CSystemArc readconfig Arc00.dat config.xml
