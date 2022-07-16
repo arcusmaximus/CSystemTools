@@ -243,12 +243,12 @@ namespace CSystemArc
 
         private static string GetRawFileName(int id, char type, char subType)
         {
-            return $"{id:d04}.cs{type}{(subType != '0' ? subType.ToString() : "")}";
+            return $"{id:d06}.{type}{subType}";
         }
 
         private static bool TryParseRawFileName(string fileName, out int id, out char type, out char subType)
         {
-            Match match = Regex.Match(fileName, @"^(\d+)\.cs([a-z])([a-z])?$");
+            Match match = Regex.Match(fileName, @"^(\d+)\.(\w)(\w)?$");
             if (!match.Success)
             {
                 id = 0;
@@ -265,12 +265,12 @@ namespace CSystemArc
 
         private static string GetImageFolderName(int id)
         {
-            return $"{id:d05}";
+            return $"{id:d06}";
         }
 
         private static string GetImageFileName(int id)
         {
-            return $"{id:d05}.png";
+            return $"{id:d06}.png";
         }
 
         private static void ReadConfig(string datFilePath, string xmlFilePath)
