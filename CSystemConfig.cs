@@ -46,20 +46,20 @@ namespace CSystemArc
 
         public XDocument ToXml()
         {
-            if (_items.Count != 8)
+            if (_items.Count > 8)
                 throw new InvalidDataException("Unexpected number of items");
 
             XElement configElem =
                 new XElement(
                     "config",
-                    TextItemToXml(_items[0]),
-                    DictionaryItemToXml(_items[1]),
-                    TextItemToXml(_items[2]),
-                    TextItemToXml(_items[3]),
-                    TextItemToXml(_items[4]),
-                    TextItemToXml(_items[5]),
-                    BinaryItemToXml(_items[6]),
-                    BinaryItemToXml(_items[7])
+                    TextItemToXml(0),
+                    DictionaryItemToXml(1),
+                    TextItemToXml(2),
+                    TextItemToXml(3),
+                    TextItemToXml(4),
+                    TextItemToXml(5),
+                    BinaryItemToXml(6),
+                    BinaryItemToXml(7)
                 );
 
             XElement data1Elem =
@@ -166,8 +166,12 @@ namespace CSystemArc
             return data;
         }
 
-        private static XElement BinaryItemToXml(byte[] item)
+        private XElement BinaryItemToXml(int index)
         {
+            if (index >= _items.Count)
+                return null;
+
+            byte[] item = _items[index];
             return new XElement(
                 "item",
                 new XAttribute("type", "binary"),
@@ -175,18 +179,33 @@ namespace CSystemArc
             );
         }
 
-        private static XElement TextItemToXml(byte[] item)
+        private XElement TextItemToXml(int index)
         {
-            string text = SjisEncoding.GetString(item);
-            return new XElement(
-                "item",
-                new XAttribute("type", "text"),
-                text
-            );
+            if (index >= _items.Count)
+                return null;
+
+            try
+            {
+                string text = SjisEncoding.GetString(_items[index]);
+                return new XElement(
+                    "item",
+                    new XAttribute("type", "text"),
+                    text
+                );
+            }
+            catch (DecoderFallbackException)
+            {
+                return BinaryItemToXml(index);
+            }
         }
 
-        private static XElement DictionaryItemToXml(byte[] item)
+        private XElement DictionaryItemToXml(int index)
         {
+            if (index >= _items.Count)
+                return null;
+
+            byte[] item = _items[index];
+
             XElement dictElem =
                 new XElement(
                     "item",
